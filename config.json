@@ -4,6 +4,7 @@
 	"appName":"server",
 	"publicFolder": "public",
 	"modules":{
+		"utl":"./utl.js",
 		"db":"./db.js",
 		"api":"./api.js"
 	},
