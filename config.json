@@ -1,0 +1,21 @@
+{
+	"ip": "localhost",
+	"port": 80,
+	"appName":"server",
+	"publicFolder": "public",
+	"modules":{
+		"db":"./db.js",
+		"api":"./api.js"
+	},
+	"typeDic":{
+		".txt":"text/plain",
+		".html":"text/html",
+		".htm":"text/html",
+		".css":"text/css",
+		".js":"application/javascript",
+		".png":"image/png",
+		".svg":"image/svg+xml",
+		".ico":"image/x-icon",
+		"":"text/plain"
+	}
+}
