@@ -1,8 +1,6 @@
 //db.js
 const fs = require('fs');
 
-const utl = require('./utl.js');
-
 module.exports = db;
 
 ///////////////////////
@@ -25,45 +23,3 @@ function db(rel, pkey, value) {
 	r[pkey] = value;
 	fs.writeFileSync(`data/${rel}.json`, JSON.stringify(r));
 }
-
-//This is a relic and will be deleted
-//////////////////////////////////////////
-
-function write(rel, pkey, value) {
-	
-};
-
-function read(rel, pkey) {
-
-	var result = new EE();
-
-	// If no arguments provided return list of relations (a.k.a. tables)
-	if (!arguments.length) {
-		fs.readdir('data', (err,files)=>{
-			if (err) {
-				utl.log(err);
-				result.emit('error', err);
-			} else {
-				result.emit('done', files);
-			}
-		});
-		return result;
-	};
-
-	fs.readFile(`data/${rel}.json`, (err, d)=>{
-		
-		if (err) {
-			utl.log(err);
-			result.emit('error', err);
-		} else if (arguments.length < 2){
-		
-			// If no pkey provided return entire object
-			result.emit('done', JSON.parse(d));
-		
-		} else {
-			result.emit('done', JSON.parse(d)[pkey] || '');
-		};
-	});
-
-	return result;
-};
