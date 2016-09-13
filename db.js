@@ -18,7 +18,9 @@ function write(rel, pkey, value) {
 };
 
 function read(rel, pkey) {
-
+	//
+	//
+	
 	if (!rel) {
 		
 	};
