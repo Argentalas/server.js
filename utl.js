@@ -1,4 +1,5 @@
-//utl module
+//utl.js
+
 module.exports = {
 	parseurl: parseurl,
 	log: log,
@@ -7,6 +8,8 @@ module.exports = {
 	rerequire: rerequire
 };
 
+//////////////////////////
+
 function parseurl(url) {
 	
 	return url.split('/').slice(1);
@@ -14,8 +17,10 @@ function parseurl(url) {
 
 function log() {
 	var args = Array.from(arguments);
-	args.unshift('['+formatDate(Date.now())+']');
-	console.log.apply(this, args);
+	var d = formatDate(Date.now());
+	
+	console.log.apply(this, ['['+d+']'].concat(args));
+	db(log, d, args);
 };
 
 function formatDate(timestamp){
