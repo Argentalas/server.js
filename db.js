@@ -1,4 +1,5 @@
 //db.js
+
 const fs = require('fs');
 
 module.exports = db;
@@ -7,7 +8,7 @@ module.exports = db;
 
 function db(rel, pkey, value) {
 
-	// If no arguments provided return list of relations (a.k.a. tables)
+	// If no arguments provided return list of relations (a.k.a. tables :-) )
 	var l = fs.readdirSync('data');
 	if (arguments.length === 0) {return l};
 
@@ -22,4 +23,4 @@ function db(rel, pkey, value) {
 	// If at least three arguments provided then write provided value to the database
 	r[pkey] = value;
 	fs.writeFileSync(`data/${rel}.json`, JSON.stringify(r));
-}
+};
