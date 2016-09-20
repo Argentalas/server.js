@@ -1,5 +1,7 @@
 //utl.js
 
+const db = require('./db.js');
+
 module.exports = {
 	parseurl: parseurl,
 	log: log,
@@ -16,11 +18,14 @@ function parseurl(url) {
 };
 
 function log() {
-	var args = Array.from(arguments);
 	var d = formatDate(Date.now());
+	var args = Array.from(arguments);
 	
 	console.log.apply(this, ['['+d+']'].concat(args));
 	db(log, d, args);
+	
+	// Returns first argument, so if there is only one argument you can log and evaluate argument in one line )
+	return arguments[0];
 };
 
 function formatDate(timestamp){
