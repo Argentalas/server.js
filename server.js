@@ -28,11 +28,13 @@ function main(req, res) {
 
 	utl.log(req.url, req.connection.remoteAddress);
 
-	if(utl.parseurl(req.url)[0] === 'api'){
-		api(req, res);
-	}else{
-		static(req, res);
-	};
+	api(req,res) || static(req, res);
+
+	// if(utl.parseurl(req.url)[0] === 'api'){
+	// 	api(req, res);
+	// }else{
+	// 	static(req, res);
+	// };
 };
 
 function static(req, res) {
