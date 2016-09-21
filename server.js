@@ -1,3 +1,4 @@
+//server.js
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
@@ -28,13 +29,8 @@ function main(req, res) {
 
 	utl.log(req.url, req.connection.remoteAddress);
 
-	api(req,res) || static(req, res);
+	api.switch(req) ? api(req,res) : static(req, res);
 
-	// if(utl.parseurl(req.url)[0] === 'api'){
-	// 	api(req, res);
-	// }else{
-	// 	static(req, res);
-	// };
 };
 
 function static(req, res) {
