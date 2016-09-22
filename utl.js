@@ -7,7 +7,8 @@ module.exports = {
 	log: log,
 	formatDate: formatDate,
 	mime: mime,
-	rerequire: rerequire
+	rerequire: rerequire,
+	sendCode: sendCode
 };
 
 //////////////////////////
@@ -58,3 +59,15 @@ function rerequire(modname) {
 	delete require.cache[require.resolve(modname)];
 	return require(modname);
 };
+
+function sendCode(code, res, text) {
+	res.writeHead(code, {'Content-Type':'text/plain'});
+	res.end(text || '');
+};
+
+function send(json, res) {
+	if (!res) {res = this};
+
+	res.writeHead(200, {'Content-Type':'application/json'});
+	res.end(json);
+}
