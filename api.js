@@ -3,31 +3,53 @@
 var bcrypt = require('bcrypt');
 
 const utl = require('./utl.js');
+const db = require('./db.js');
+const cfg = require('./config.js');
 
 api.switch = apiSwitch;
+api.register = register;
 
 module.exports = api;
 
 ///////////////////////////
+
+function register(req, res) {
+	var msg = req.msg;
+
+	if (msg.username in db.private(users)) {
+		sendCode(400, res, 'username taken');
+		return;
+	};
+
+	bcrypt.hash(msg.token, cfg.saltRounds, (err,hash)=>{
+		if (err) {
+			sendCode(500, res); 
+			utl.log(`bcrypt error ${err}`);
+			return;
+		};
+		db.private(users, msg.username, {token:hash, permissions:''});
+		sendCode(200, res);
+	});
+}
 
 function api(req, res) {
 
 	var command = utl.parseurl(req.url)[1];
 	var username = utl.parseurl(req.url)[2];
 
-	if (!authorized(command, username)) {sendCode(403, res)};
+	if (!authorized(command, username)) {sendCode(403, res); return};
 
-	var msg=[];
+	req.msg=[];
 
 	req.on('error', (err)=>{
 		utl.log(err);
 		sendCode(res, 400);
 	}).on('data', (d)=>{
-		msg.push(d);
+		req.msg.push(d);
 	}).on('end', ()=>{
-		msg = JSON.parse(Buffer.concat(msg).toString());
-		authenticate(username, msg.token, res, req, ()=>{
-			api[command](msg, res);
+		req.msg = JSON.parse(Buffer.concat(req.msg).toString());
+		authenticate(username, req.msg.token, res, req, ()=>{
+			api[command](req, res);
 		});
 	});
 

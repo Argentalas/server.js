@@ -1,1 +1,8 @@
-{}
+{
+	"user":{
+		"token":"$2a$10$i30dJOfFKiasuk1TXDGlUeC4A8m53bMBe9sIOLiEjyzni0jdK9hrm",
+		"permissions":{
+			"register":true
+		}
+	}
+}
