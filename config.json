@@ -1,6 +1,6 @@
 {
 	"ip": "localhost",
-	"port": 80,
+	"port": 8080,
 	"appName":"server",
 	"publicFolder": "public",
 	"saltRounds":10,

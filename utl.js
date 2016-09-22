@@ -1,7 +1,10 @@
 //utl.js
 
-const db = require('./db.js');
 const http = require('http');
+const path = require('path');
+
+const cfg = require('./config.json')
+const db = require('./db.js');
 
 module.exports = {
 	parseurl: parseurl,
@@ -25,7 +28,7 @@ function log() {
 	var args = Array.from(arguments);
 	
 	console.log.apply(this, ['['+d+']'].concat(args));
-	db(log, d, args);
+	db('log', d, args);
 	
 	// Returns first argument, so if there is only one argument you can log and evaluate argument in one line )
 	return arguments[0];

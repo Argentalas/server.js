@@ -4,7 +4,7 @@ var bcrypt = require('bcrypt');
 
 const utl = require('./utl.js');
 const db = require('./db.js');
-const cfg = require('./config.js');
+const cfg = require('./config.json');
 const commands = require('./commands.js');
 
 api.switch = apiSwitch;
@@ -21,7 +21,7 @@ module.exports = api;
 function register(req, res) {
 	var msg = req.msg;
 
-	if (msg.username in db.private(users)) {
+	if (msg.username in db.private('users')) {
 		res.sendCode(400, 'username taken');
 		return;
 	};
@@ -32,7 +32,7 @@ function register(req, res) {
 			utl.log(`bcrypt error ${err}`);
 			return;
 		};
-		db.private(users, msg.username, {token:hash, permissions:''});
+		db.private('users', msg.username, {token:hash, permissions:''});
 		res.sendCode(200);
 	});
 }
@@ -69,7 +69,7 @@ function api(req, res) {
 function authenticate(username, token, res, req, cb) {
 	token = token || '';
 
-	bcrypt.compare(token, db.private(users, username).token, (err,result)=>{
+	bcrypt.compare(token, db.private('users', username).token, (err,result)=>{
 		if (err) {
 			res.sendCode(400);
 			utl.log(`bcrypt error ${err.message}`);
@@ -84,7 +84,7 @@ function authenticate(username, token, res, req, cb) {
 
 function authorized(command, username) {
 
-	const users = db.private(users);
+	const users = db.private('users');
 
 	return (username in users && command in users[username].permissions);
 

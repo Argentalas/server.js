@@ -28,6 +28,6 @@ function createDB(dbname) {
 
 		// If at least three arguments provided then write provided value to the database
 		r[pkey] = value;
-		fs.writeFileSync(`${dbname}/${rel}.json`, JSON.stringify(r));
+		fs.writeFileSync(`${dbname}/${rel}.json`, JSON.stringify(r, null, '\t'));
 	};
 };

@@ -11,6 +11,6 @@ module.exports = {
 		var msg = request.msg;
 
 		//response.send(data) method sends back json; you can also use require('./utl.js').send(data, response) or full functionality of http.ServerResponse https://nodejs.org/dist/latest-v4.x/docs/api/http.html#http_class_http_serverresponse
-		response.send(msg);
+		response.send(msg.text);
 	}
 };
