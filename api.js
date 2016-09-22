@@ -22,18 +22,18 @@ function register(req, res) {
 	var msg = req.msg;
 
 	if (msg.username in db.private(users)) {
-		utl.sendCode(400, res, 'username taken');
+		res.sendCode(400, 'username taken');
 		return;
 	};
 
 	bcrypt.hash(msg.token, cfg.saltRounds, (err,hash)=>{
 		if (err) {
-			utl.sendCode(500, res); 
+			res.sendCode(500); 
 			utl.log(`bcrypt error ${err}`);
 			return;
 		};
 		db.private(users, msg.username, {token:hash, permissions:''});
-		utl.sendCode(200, res);
+		res.sendCode(200);
 	});
 }
 
@@ -42,19 +42,24 @@ function api(req, res) {
 	var command = utl.parseurl(req.url)[1];
 	var username = utl.parseurl(req.url)[2];
 
-	if (!authorized(command, username)) {utl.sendCode(403, res); return};
+	if (!authorized(command, username)) {res.sendCode(403); return};
 
 	req.msg=[];
 
 	req.on('error', (err)=>{
 		utl.log(err);
-		utl.sendCode(res, 400);
+		res.sendCode(400);
 	}).on('data', (d)=>{
 		req.msg.push(d);
 	}).on('end', ()=>{
-		req.msg = JSON.parse(Buffer.concat(req.msg).toString());
+		try {
+			req.msg = JSON.parse(Buffer.concat(req.msg).toString());
+		} catch(e) {
+			res.sendCode(400, 'post data must be valid json');
+			utl.log(e.message);
+			return;
+		};
 		authenticate(username, req.msg.token, res, req, ()=>{
-			res.send = utl.send;
 			api[command](req, res);
 		});
 	});
@@ -66,10 +71,10 @@ function authenticate(username, token, res, req, cb) {
 
 	bcrypt.compare(token, db.private(users, username).token, (err,result)=>{
 		if (err) {
-			utl.sendCode(400, res);
-			utl.log(`bcrypt error ${err}`);
+			res.sendCode(400);
+			utl.log(`bcrypt error ${err.message}`);
 		} else if (!result) {
-			utl.sendCode(403, res);
+			res.sendCode(403);
 			utl.log(`failed authentification for user ${username} from ${req.connection.remoteAdress}`);
 		} else {
 			cb();

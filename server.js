@@ -1,9 +1,12 @@
 //server.js
-const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const http = require('http');
 
 const utl = require('./utl.js');
+
+http.ServerResponse.prototype.sendCode = utl.sendCode;
+http.ServerResponse.prototype.send = utl.send;
 
 var cfg;
 
@@ -13,7 +16,6 @@ fs.watch('config.json', init);
 
 init();
 
-// Only declarations below //
 /////////////////////////////
 
 function init() {

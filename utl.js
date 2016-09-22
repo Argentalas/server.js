@@ -1,6 +1,7 @@
 //utl.js
 
 const db = require('./db.js');
+const http = require('http');
 
 module.exports = {
 	parseurl: parseurl,
@@ -8,7 +9,8 @@ module.exports = {
 	formatDate: formatDate,
 	mime: mime,
 	rerequire: rerequire,
-	sendCode: sendCode
+	sendCode: sendCode,
+	send: send
 };
 
 //////////////////////////
@@ -60,14 +62,21 @@ function rerequire(modname) {
 	return require(modname);
 };
 
-function sendCode(code, res, text) {
+function sendCode(code, text, res) {
+	if (text && text instanceof http.ServerResponse) {
+		res = text;
+		text = '';
+	}
+	res = res || this;
+
 	res.writeHead(code, {'Content-Type':'text/plain'});
 	res.end(text || '');
 };
 
-function send(json, res) {
-	if (!res) {res = this};
-
+function send(data, res) {
+	res = res || this;
+	data = data || '';
+	
 	res.writeHead(200, {'Content-Type':'application/json'});
-	res.end(json);
+	res.end(JSON.stringify(data));
 }
