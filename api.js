@@ -26,7 +26,7 @@ function register(req, res) {
 		return;
 	};
 
-	bcrypt.hash(msg.token, cfg.saltRounds, (err,hash)=>{
+	bcrypt.hash(msg.pass, cfg.saltRounds, (err,hash)=>{
 		if (err) {
 			res.sendCode(500); 
 			utl.log(`bcrypt error ${err}`);
@@ -85,8 +85,9 @@ function authenticate(username, token, res, req, cb) {
 function authorized(command, username) {
 
 	const users = db.private('users');
+	var permissions = users[username].permissions;
 
-	return (username in users && command in users[username].permissions);
+	return (username in users && (command in permissions || 'any' in permissions));
 
 };
 
