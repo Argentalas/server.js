@@ -18,6 +18,10 @@ module.exports = api;
 
 ///////////////////////////
 
+function reload(argument) {
+	
+}
+
 function register(req, res) {
 	var msg = req.msg;
 
@@ -91,8 +95,7 @@ function authorized(command, username) {
 
 };
 
-
-
 function apiSwitch(req) {
 	return (utl.parseurl(req.url)[0] === 'api' && req.method === 'POST');
 };
+
