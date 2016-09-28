@@ -25,14 +25,8 @@ module.exports = api;
 
 function reload(req, res) {
 	cfg.timestamp = utl.formatDate(Date.now());
-	fs.writeFile('config.json', JSON.stringify(cfg), (err)=>{
-		if (err) {
-			utl.log(err.message);
-			res.sendCode(500);
-		}else{
-			res.sendCode(200);
-		}
-	});
+	fs.writeFileSync('config.json', JSON.stringify(cfg, null, '\t'));
+	res.sendCode(200);
 };
 
 function register(req, res) {
