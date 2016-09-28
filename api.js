@@ -1,4 +1,5 @@
 //api.js
+const fs = require('fs');
 
 var bcrypt = require('bcrypt');
 
@@ -7,20 +8,32 @@ const db = require('./db.js');
 const cfg = require('./config.json');
 const commands = require('./commands.js');
 
-api.switch = apiSwitch;
+//overwritable by commands.js
 api.register = register;
+api.reload = reload;
 
 for (c in commands) {
 	api[c] = commands[c];
 };
 
+//not overwritable
+api.switch = apiSwitch;
+
 module.exports = api;
 
 ///////////////////////////
 
-function reload(argument) {
-	
-}
+function reload(req, res) {
+	cfg.timestamp = utl.formatDate(Date.now());
+	fs.writeFile('config.json', JSON.stringify(cfg), (err)=>{
+		if (err) {
+			utl.log(err.message);
+			res.sendCode(500);
+		}else{
+			res.sendCode(200);
+		}
+	});
+};
 
 function register(req, res) {
 	var msg = req.msg;
@@ -36,10 +49,10 @@ function register(req, res) {
 			utl.log(`bcrypt error ${err}`);
 			return;
 		};
-		db.private('users', msg.username, {token:hash, permissions:''});
+		db.private('users', msg.username, {token:hash, permissions:{echo:true}});
 		res.sendCode(200);
 	});
-}
+};
 
 function api(req, res) {
 
