@@ -5,6 +5,8 @@ web application template
 
 1. Install Nodejs LTS version for your platform form https://nodejs.org/en/download/
 
+	Note that package managers do not necesserily install LTS version
+
 2. Run the following:
 > $ cd ~  
 > $ wget https://github.com/Argentalas/serverjs/archive/master.zip  
