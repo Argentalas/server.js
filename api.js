@@ -30,20 +30,20 @@ function reload(req, res) {
 };
 
 function register(req, res) {
-	var msg = req.msg;
+	var postData = req.postData;
 
-	if (msg.username in db.private('users')) {
+	if (postData.username in db.private('users')) {
 		res.sendCode(400, 'username taken');
 		return;
 	};
 
-	bcrypt.hash(msg.pass, cfg.saltRounds, (err,hash)=>{
+	bcrypt.hash(postData.pass, cfg.saltRounds, (err,hash)=>{
 		if (err) {
 			res.sendCode(500); 
 			utl.log(`bcrypt error ${err}`);
 			return;
 		};
-		db.private('users', msg.username, {token:hash, permissions:{echo:true}});
+		db.private('users', postData.username, {token:hash, permissions:{echo:true}});
 		res.sendCode(200);
 	});
 };
@@ -55,30 +55,32 @@ function api(req, res) {
 
 	if (!authorized(command, username)) {res.sendCode(403); return};
 
-	req.msg=[];
+	req.postData=[];
 
 	req.on('error', (err)=>{
 		utl.log(err);
 		res.sendCode(400);
 	}).on('data', (d)=>{
-		req.msg.push(d);
+		req.postData.push(d);
 	}).on('end', ()=>{
 		try {
-			req.msg = JSON.parse(Buffer.concat(req.msg).toString());
+			req.postData = JSON.parse(Buffer.concat(req.postData).toString());
 		} catch(e) {
 			res.sendCode(400, 'post data must be valid json');
 			utl.log(e.message);
 			return;
 		};
-		authenticate(username, req.msg.token, res, req, ()=>{
+		authenticate(req, res, ()=>{
 			api[command](req, res);
 		});
 	});
 
 };
 
-function authenticate(username, token, res, req, cb) {
-	token = token || '';
+function authenticate(req, res, cb) {
+	
+	var token = req.postData.token || '';
+	var username = utl.parseurl(req.url)[2];
 
 	bcrypt.compare(token, db.private('users', username).token, (err,result)=>{
 		if (err) {
